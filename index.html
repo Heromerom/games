@@ -196,7 +196,7 @@
   </div>
 
   <audio id="myAudio" src="http://github.com/Heromerom/games/raw/game-tamagucci/DiceGame.mp3" autoplay></audio>
-
+  <audio id="notif" src="http://github.com/Heromerom/games/raw/game-tamagucci/notif.mp3" autoplay></audio>
   <script>
 const pet = {
 	nome: "Paimon",
@@ -296,13 +296,14 @@ function getRandomPaimonPhrase() {
   // Seleciona uma frase aleatória das frases filtradas
   const randomPhrase = filteredPhrases[Math.floor(Math.random() * filteredPhrases.length)];
 
-  return `<color = #00FFFF>🔵 <b>PAIMON:</b></color> ${randomPhrase.phrase}`;
+  return `<color = #00FFFF>💬 <b>PAIMON:</b></color> ${randomPhrase.phrase}`;
 }
 
 
 function Paimon() {
     if (pet.saude > 0){
 	addToConsole(getRandomPaimonPhrase());
+    notif.play();
 }
 }
 
@@ -333,8 +334,6 @@ const healthBarText = document.getElementById("healthBarText");
 
 
 
-
-
 // Atualiza a interface do jogo
 function updateGameInterface() {
     
@@ -354,8 +353,6 @@ function updateGameInterface() {
     hungerBarText.textContent = `${pet.fome}%`;
     hapinessBarText.textContent = `${pet.felicidade}%`;
 
-
-
 	updateButtons();
 	showEmoji();
 }
@@ -366,6 +363,7 @@ function addToConsole(message) {
 	li.innerHTML = formatMessage(message);
 	consoleListElement.appendChild(li);
 	consoleListElement.scrollTop = consoleListElement.scrollHeight;
+
 }
 
 // Função para formatar a mensagem com formatações personalizadas
@@ -468,12 +466,13 @@ function play() {
 
 // Ação de limpar o Tamagucci
 function clean() {
-	if (pet.sujo > 0) {
-		pet.sujo -= 1;
+	if (pet.sujo > 0 && pet.energia > 0) {
+        pet.energia -= 1;
+        pet.sujo -= 1;
 		pet.sujo = Math.max(0, pet.sujo);
 		updateGameInterface();
 	} else {
-		addToConsole(`<aviso>Não está sujo.</aviso>`)
+		addToConsole(`<erro>Não há energia suficiente.</erro>`)
 	}
 }
 
@@ -511,7 +510,8 @@ function evolve() {
 function passDay() {
 	if (pet.saude <= 0) {
 		addToConsole(`${pet.nome} morreu! Fim de jogo!`);
-		return;
+        confirm("Deseja continuar?");   
+		return location.reload();
 	}
 
 	pet.idade += 1;
@@ -548,7 +548,6 @@ function passDay() {
 	evolve();
 }
 
-
 // Adiciona os ouvintes de eventos aos botões
 feedButton.addEventListener("click", feed);
 playButton.addEventListener("click", play);
@@ -560,22 +559,25 @@ medicineButton.addEventListener("click", giveMedicine);
 updateGameInterface();
 document.addEventListener('DOMContentLoaded', () => {
 	// Call the function to initialize tooltips
-	addToConsole(`<b>Boas vindas!</b>`)
+    var notif = document.getElementById("notif")
+    notif.volume = 0.4;
+    addToConsole(`<b>Boas vindas!</b>`)
 	passDay();
-	setInterval(Paimon, 7000); // Executa a função Paimon após 5 segundos
+	setInterval(Paimon, 15000); // Executa a função Paimon após 5 segundos
 	setInterval(passDay, 10000);
-	var audio = document.getElementById("myAudio");
+
+    var audio = document.getElementById("myAudio");
 	audio.volume = 0.4;
+
 
 	audio.addEventListener("ended", function() {
 		audio.currentTime = 0; // Reinicia a reprodução para o início
 		audio.play(); // Inicia a reprodução novamente
 	});
+
 });
 
   </script>
-  
-  
  
 </body>
 </html>
