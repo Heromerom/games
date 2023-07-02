@@ -1,0 +1,97 @@
+body {
+    background-color: #1f2937;
+    color: white;
+   
+}
+
+.bg-image {
+  background-image: url('https://2.bp.blogspot.com/-YSRL7xmCD2Q/XQ8eHaJ9wkI/AAAAAAAAHtA/0-bVcL3HJmQ4eCCCJY8Sq9y0tGKoVw3IwCKgBGAs/w1920-h1080-c/genshin-impact-uhdpaper.com-4K-1.jpg');
+  background-size: cover;
+  background-position: center;  
+}
+
+.bartext {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    line-height: 20px;
+    color: white;
+    border-color: #1f2937;
+    font-size: small;
+    font-weight: bold;
+
+}
+.console {
+    font-family: system-ui;
+    background-color: #293342;
+    color: #f9fafb;
+    padding: 0.5rem;
+    border-width: 1px;
+    border-color:#ffffff1a;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+    height: 280px;
+}
+.console h2 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+.console ul {
+    font-family: helvetica;
+    list-style-type: none;
+    margin: 0;
+    padding: 0.2rem;
+    max-height: 250px;
+    overflow-y: auto;
+}
+.console li {
+    margin-bottom: 0.5rem;
+}
+/* Estilo para a scrollbar */
+.console ul::-webkit-scrollbar {
+    width: 8px;
+    border-radius: 12px;
+    margin-left: 0.2rem;
+}
+.console ul::-webkit-scrollbar-track {
+    border-radius: 12px;
+    background-color: #374151;
+}
+.console ul::-webkit-scrollbar-thumb {
+    background-color: #4b5563;
+    border-radius: 12px;
+}
+.console ul::-webkit-scrollbar-thumb:hover {
+    background-color: #6b7280;
+}
+
+.card {
+    background-color: #374151ee;
+    padding: 0.8rem;
+    border-radius: 0.5rem;
+    width: 700px;
+    height: 400px;
+    border-width: 1px;
+    border-color:#ffffff1a;
+}
+.progress-bar {
+    height: 20px;
+    border-radius: 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.emoji-box {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding-left: 10%;
+    padding-right: 10%;
+    border-radius: 8px;
+    font-size:large;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    background-color: #293342;
+}

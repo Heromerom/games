@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tamagucci</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.6/flowbite.min.css" rel="stylesheet" />
+  <link href="main.css" rel="stylesheet">
+</head>
+<body class="container mx-auto p-10 bg-image" >
+  <div class = "container">
+    
+  <div class="flex mx-auto space-x-2">
+    
+   
+    <div class="card">
+        <svg class="w-6 h-6 text-white-800 inline dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 16">
+          <path d="M19 0H1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h18a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1ZM2 6v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6H2Zm11 3a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V8a1 1 0 0 1 2 0h2a1 1 0 0 1 2 0v1Z"/>
+        </svg>
+        <h1 class="text-3xl font-bold mb-2 inline">Inventário</h1>
+      
+        <div class="console">
+      
+          <ul class="text-sm text-left text-white-300 dark:text-gray-400" id="inventario-list">
+            <!-- Os itens do inventário serão adicionados aqui dinamicamente -->
+          </ul>
+      
+        </div>
+      </div>
+
+    <div class="card">
+      <div class="flex justify-between">
+        <div>
+          <h1 class="text-3xl font-bold mb-2" id="petName"></h1>
+          <h6 class="text-1xl mb-1" id="petAge"></h6>
+          <h6 class="text-1xl mb-1" id="petEnergy"></h6>
+          <h6 class="text-1xl mb-1" id="petSleeping"></h6>
+          <h6 class="text-1xl mb-1" id="petWashing"></h6>
+        </div>
+        <img src="" alt="Tamagucci" id="petImage" class="w-40 h-40">
+      </div>
+
+
+      <div class="flex justify-between space-x-2">
+        
+        <div class="w-1/3">
+          <h2 class="text-xl font-bold mb-2">Saúde</h2>
+          <div class="progress-bar bg-red-300 rounded-full relative">
+            <div id="healthBar" class="h-full bg-red-600 rounded-full flex items-center justify-center">
+                <span id= "healthBarText" class="bartext"></span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="w-1/3">
+          <h2 class="text-xl font-bold mb-2">Fome</h2>
+          <div class="progress-bar bg-yellow-300 rounded-full relative">
+            <div id="hungerBar" class="h-full bg-yellow-600 rounded-full flex items-center justify-center">
+                <span id= "hungerBarText" class="bartext"></span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="w-1/3">
+          <h2 class="text-xl font-bold mb-2">Felicidade</h2>
+          <div class="progress-bar bg-blue-300 rounded-full relative">
+            <div id="happinessBar" class="h-full w-full bg-blue-600 rounded-full flex items-center justify-center">
+                <span id="hapinessBarText" class="bartext"></span>         
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      
+
+      <div class="flex justify-center mt-4 space-x-2">
+        <button id="medicineButton" data-popover-target="medicinePopup" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Remédio</button> 
+        <button id="feedButton" data-popover-target="feedPopup" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Alimentar</button>
+        <button id="playButton" data-popover-target="playPopup" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Aventurar</button>
+        <button id="cleanButton" data-popover-target="cleanPopup" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Limpar</button>
+        <button id="sleepButton" data-popover-target="sleepPopup" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Dormir</button>
+        
+
+        <div data-popover id="medicinePopup" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+            <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white">Medicação</h3>
+            </div>
+            <div class="px-3 py-2">
+                <p>Cuide da saúde da Paimon dando ervas medicinais ou poções.</p>
+            </div>
+            <div data-popper-arrow></div>
+        </div>
+
+        <div data-popover id="feedPopup" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+            <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white">Medicação</h3>
+            </div>
+            <div class="px-3 py-2">
+                <p>Cuide da saúde da Paimon dando ervas medicinais ou poções.</p>
+            </div>
+            <div data-popper-arrow></div>
+        </div>
+
+        <div data-popover id="playPopup" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+            <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white">⚔️ Aventurar-se</h3>
+            </div>
+            <div class="px-3 py-2">
+                <p>Entra em uma aventura aleatória em busca de loots e restaure sua felicidade. <br> Necessário ⚡<b>1 energia</b> </p>
+            </div>
+            <div data-popper-arrow></div>
+        </div>
+
+        <div data-popover id="cleanPopup" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+            <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white">🧼 Limpeza</h3>
+            </div>
+            <div class="px-3 py-2">
+                <p>Quanto mais encardida, mais a Paimon fica mal de saúde. <br> Necessário ⚡<b>1 energia</b></p>
+            </div>
+            <div data-popper-arrow></div>
+        </div>
+
+        <div data-popover id="sleepPopup" role="tooltip" class="absolute z-10 invisible inline-block w-64 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+            <div class="px-3 py-2 bg-gray-100 border-b border-gray-200 rounded-t-lg dark:border-gray-600 dark:bg-gray-700">
+                <h3 class="font-semibold text-gray-900 dark:text-white">🛌🏻 Dormir</h3>
+            </div>
+            <div class="px-3 py-2">
+                <p>Restaure suas forças por <b>3 dias</b> enquanto dorme.</p>
+            </div>
+            <div data-popper-arrow></div>
+        </div>
+        
+      </div>
+      <div class="flex justify-center mt-4">
+        <div id="emoji" class="emoji-box text-4xl"></div>
+      </div>
+    </div>
+
+    <div class="card">    
+        <h1 class="text-3xl font-bold mb-2"><svg class="w-6 h-6 text-align-center text-white-800 dark:text-white inline" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 5h1v12a2 2 0 0 1-2 2m0 0a2 2 0 0 1-2-2V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v15a2 2 0 0 0 2 2h14ZM10 4h2m-2 3h2m-8 3h8m-8 3h8m-8 3h8M4 4h3v3H4V4Z"/>
+          </svg> Jornal</h1>
+        <div class="console">
+          
+          <ul id="consoleList"></ul>
+        </div>
+    </div>
+
+  </div>
+</div>
+  <audio id="myAudio" src="sounds/DiceGame.mp3" autoplay></audio>
+  <audio id="notif" src="sounds/notif.mp3" autoplay></audio>
+  <audio id="crunch" src="sounds/apple-crunch.mp3" autoplay></audio>
+  
+  <script src="game.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/1.6.6/flowbite.min.js"></script>
+ 
+</body>
+</html>
