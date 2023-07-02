@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tamagucci</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #1f2937;
+      color: #f9fafb;
+    }
+    
+    .console {
+  font-family: system-ui;
+  background-color: #293342;
+  color: #f9fafb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-top: 1rem;
+  height: 280px;
+}
+
+.console h2 {
+    
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.console ul {
+    font-family: helvetica;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.console li {
+  margin-bottom: 0.5rem;
+}
+
+/* Estilo para a scrollbar */
+.console ul::-webkit-scrollbar {
+      width: 10px;
+      border-radius: 12px;
+    }
+
+    .console ul::-webkit-scrollbar-track {
+        border-radius: 12px;
+      background-color: #374151;
+    }
+
+    .console ul::-webkit-scrollbar-thumb {
+      background-color: #4b5563;
+      border-radius: 12px;
+    }
+
+    .console ul::-webkit-scrollbar-thumb:hover {
+      background-color: #6b7280;
+    }
+
+    .card {
+      background-color: #374151;
+      padding: 2rem;
+      border-radius: 0.5rem;
+      width: 700px;
+      height: 400px;
+    }
+
+    .progress-bar {
+      height: 20px;
+      border-radius: 20px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+    }
+
+    .emoji-box {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      padding-left: 10%;
+      padding-right: 10%;
+      border-radius: 8px;
+      font-size:large;
+      
+      justify-content: center;
+      align-items: center;
+      display: flex;
+      background-color: #293342;
+    }
+  </style>   
+</head>
+<body>
+    
+      
+  <div class="flex mx-auto p-4 space-x-2">
+    
+    <div class="card">
+      <div class="flex justify-between">
+        <div>
+          <h1 class="text-3xl font-bold mb-2" id="petName"></h1>
+          <h6 class="text-1xl mb-1" id="petAge"></h6>
+          <h6 class="text-1xl mb-1" id="petEnergy"></h6>
+          <h6 class="text-1xl mb-1" id="petSleeping"></h6>
+        </div>
+        <img src="https://mario.wiki.gallery/images/3/3f/MPS_Boo_Artwork.png" alt="Tamagotchi" id="petImage" class="w-40 h-40">
+      </div>
+
+      <div class="flex justify-between space-x-2">
+        <div class="w-1/3">
+          <h2 class="text-xl font-bold mb-2">Saúde</h2>
+          <div class="progress-bar bg-red-300 rounded-full">
+            <div id="healthBar" class="h-full bg-red-600 rounded-full"></div>
+          </div>
+        </div>
+        <div class="w-1/3">
+          <h2 class="text-xl font-bold mb-2">Fome</h2>
+          <div class="progress-bar bg-yellow-300 rounded-full">
+            <div id="hungerBar" class="h-full bg-yellow-600 rounded-full"></div>
+          </div>
+        </div>
+        <div class="w-1/3">
+          <h2 class="text-xl font-bold mb-2">Felicidade</h2>
+          <div class="progress-bar bg-blue-300 rounded-full">
+            <div id="happinessBar" class="h-full bg-blue-600 rounded-full"></div>
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-center mt-4 space-x-2">
+        <button id="medicineButton" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Remédio</button>
+        <button id="feedButton" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Alimentar</button>
+        <button id="playButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Brincar</button>
+        <button id="cleanButton" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Limpar</button>
+        <button id="sleepButton" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Dormir</button>
+        
+      </div>
+      <div class="flex justify-center mt-4">
+        <div id="emoji" class="emoji-box text-4xl"></div>
+      </div>
+    </div>
+
+    <div class="card">
+
+        <h1 class="text-3xl font-bold mb-2">Jornal</h1>
+        <div class="console">
+          
+          <ul id="consoleList"></ul>
+        </div>
+      </div>
+
+  </div>
+
+
+  <script>
+    const pet = {
+      nome: "Paimon",
+      idade: 0,
+      saude: 100,
+      fome: 50,
+      felicidade: 100,
+      energia: 0,
+      isSleeping: false,
+      sujo: 0,
+      "sleep-img-url": "https://stickerly.pstatic.net/sticker_pack/iYFODRyx2vbEYoLJDuA/C6L2EL/34/913b4ea6-c5cc-46e7-91d7-cd61f429f0ff.png",
+      "happy-img-url": "https://mystickermania.com/cdn/stickers/genshin-impact/genshin-paimon-512x512.png",
+      "sad-img-url": "https://64.media.tumblr.com/a6def43e95357d48c8f62c6900be704a/53828a39d1e162b1-a7/s500x750/e7caafa817b1f869adf0e24ab8856f4157ebe4bc.png",
+      "neutral-img-url": "https://mystickermania.com/cdn/stickers/genshin-impact/genshin-paimon-512x512.png",
+      "think-img-url":"https://s3.getstickerpack.com/storage/uploads/sticker-pack/genshin-paimon/sticker_16.png",
+      "play-img-url": "https://i.redd.it/aoiyeqhhlvf81.gif"
+    };
+
+      // Frases aleatórias da Paimon com base em seu estado
+      function getRandomPaimonPhrase() {
+  const health = pet.saude;
+  const hunger = pet.fome;
+  const happiness = pet.felicidade;
+
+  let phrase;
+  if (hunger < 70) {
+    const phrases = [
+      "Paimon está com muita fome!",
+      "Paimon precisa urgentemente de comida!",
+      "Paimon está desmaiando de fome!",
+      "Paimon está com o estômago roncando!",
+      "Paimon sente cheiro de comida... que delícia!",
+      "Paimon está faminta como um tarsilho!",
+      "Paimon quer um lanche bem suculento!",
+      "Paimon adora um bom banquete!"
+    ];
+    phrase = phrases[Math.floor(Math.random() * phrases.length)];
+  } else if (health < 40) {
+    const phrases = [
+      "Paimon não está se sentindo bem...",
+      "Paimon precisa de cuidados médicos.",
+      "Paimon está doente, preciso de ajuda!",
+      "Paimon está fraca e precisa se recuperar.",
+      "Paimon precisa de remédios para melhorar.",
+      "Paimon quer ficar saudável novamente!",
+      "Paimon precisa descansar e se recuperar."
+    ];
+    phrase = phrases[Math.floor(Math.random() * phrases.length)];
+  } else if (happiness < 30) {
+    const phrases = [
+      "Paimon está muito triste...",
+      "Paimon não consegue se animar...",
+      "Paimon precisa de carinho e atenção...",
+      "Paimon está se sentindo solitária...",
+      "Paimon quer brincar e se divertir!",
+      "Paimon precisa de um abraço bem apertado!",
+      "Paimon quer explorar o mundo com você!"
+    ];
+    phrase = phrases[Math.floor(Math.random() * phrases.length)];
+  } else {
+    const phrases = [
+      "Olá, viajante! Como posso te ajudar hoje?",
+      "Paimon está pronta para aventuras!",
+      "Paimon está aqui para te auxiliar!",
+      "Paimon adora acompanhar seus passos!",
+      "Paimon é sua guia fiel e amiga!",
+      "Paimon está ansiosa para explorar novos lugares!",
+      "Paimon está curiosa para descobrir segredos escondidos!"
+    ];
+    phrase = phrases[Math.floor(Math.random() * phrases.length)];
+  }
+
+  return `🔵 Paimon: ${phrase}`;
+}
+
+  
+    // Cache de elementos DOM
+    const petNameElement = document.getElementById("petName");
+    const petAgeElement = document.getElementById("petAge");
+    const petEnergyElement = document.getElementById("petEnergy");
+    const petSleepingElement = document.getElementById("petSleeping")  
+    const petImageElement = document.getElementById("petImage");
+    const healthBarElement = document.getElementById("healthBar");
+    const hungerBarElement = document.getElementById("hungerBar");
+    const happinessBarElement = document.getElementById("happinessBar");
+    const feedButton = document.getElementById("feedButton");
+    const playButton = document.getElementById("playButton");
+    const cleanButton = document.getElementById("cleanButton");
+    const sleepButton = document.getElementById("sleepButton");
+    const medicineButton = document.getElementById("medicineButton");
+    const emojiElement = document.getElementById("emoji");
+    const consoleListElement = document.getElementById("consoleList");
+  
+    // Atualiza a interface do jogo
+    function updateGameInterface() {
+      petNameElement.textContent = pet.nome;
+      petAgeElement.textContent = `📅 ${pet.idade} dias`;
+      petEnergyElement.textContent = `⚡ ${pet.energia}`;
+      petSleepingElement.textContent = `💤 ${pet.isSleeping}`;
+      petImageElement.src = getPetImage();
+      healthBarElement.style.width = `${pet.saude}%`;
+      hungerBarElement.style.width = `${pet.fome}%`;
+      happinessBarElement.style.width = `${pet.felicidade}%`;
+      healthBarElement.textContent = `${pet.saude}%`;
+      hungerBarElement.textContent = `${pet.fome}%`;
+      happinessBarElement.textContent = `${pet.felicidade}%`;
+      updateButtons();
+      showEmoji();
+    }
+  
+// Função para adicionar uma mensagem ao console
+function addToConsole(message) {
+  const li = document.createElement("li");
+  li.innerHTML = formatMessage(message);
+  consoleListElement.appendChild(li);
+  consoleListElement.scrollTop = consoleListElement.scrollHeight;
+}
+
+// Função para formatar a mensagem com formatações personalizadas
+function formatMessage(message) {
+  // Formatação para negrito
+  message = message.replace(/<b>(.*?)<\/b>/g, "<strong>$1</strong>");
+
+  // Formatação para itálico
+  message = message.replace(/<i>(.*?)<\/i>/g, "<em>$1</em>");
+
+  // Formatação para sublinhado
+  message = message.replace(/<s>(.*?)<\/s>/g, "<u>$1</u>");
+
+  // Formatação para cor
+  message = message.replace(/<color = #([A-Fa-f0-9]{6})>(.*?)<\/color>/g, '<span style="color: #$1;">$2</span>');
+
+  // Formatação para texto se mexendo
+  // message = message.replace(/<shake>(.*?)<\/shake>/g, '<span class="shake-animation">$1</span>');
+
+  // Formatação para links clicáveis
+  message = message.replace(/<url="(.*?)">(.*?)<\/url>/g, '<u><a href="$1">$2</a></u>');
+
+  return message;
+}
+
+ 
+    // Atualiza o estado dos botões com base nas necessidades do Tamagotchi
+    function updateButtons() {
+      feedButton.disabled = pet.fome >= 100 || pet.saude <= 0;
+      playButton.disabled = pet.felicidade >= 100 || pet.saude <= 0;
+      cleanButton.disabled = pet.sujo === 0 || pet.saude <= 0;
+      sleepButton.disabled = pet.isSleeping || pet.saude <= 0;
+      medicineButton.disabled = pet.saude >= 100 || pet.saude <= 0;
+    }
+  
+    // Obtém a URL da imagem com base no estado do Tamagotchi
+    function getPetImage() {
+      if (pet.isSleeping === true) {
+        addToConsole(`${pet.nome} dormiu.`);
+        return pet["sleep-img-url"];
+      } else if (pet.saude <= 50) {
+        return pet["sad-img-url"];
+      } else if (pet.felicidade <= 50) {
+        return pet["neutral-img-url"];
+      } else {
+        return pet["happy-img-url"];
+      }
+    }
+
+    // Mostra um emoji indicando as necessidades do Tamagotchi
+    function showEmoji() {
+      let emoji = "";
+      if (pet.fome < 50) {
+        addToConsole(`${pet.nome} está com fome. 🍔`);
+        emoji += "🍔";
+      }
+      if (pet.saude < 50) {
+        addToConsole(`${pet.nome} está doente. 💊`);
+        emoji += "💊";
+      }
+      if (pet.felicidade < 50) {
+        emoji += "😢";
+        addToConsole(`${pet.nome} está infeliz 😢.`);
+      }
+      if (pet.sujo > 0) {
+        emoji += "🧼";
+      }
+      if (emoji === "" && pet.saude >= 100) {
+        emoji = " ";
+      }
+      emojiElement.textContent = emoji;
+    }
+  
+    // Ação de alimentar o Tamagotchi
+    function feed() {
+      if (pet.fome < 100) {
+        pet.fome += 20;
+        pet.saude -= 10;
+        pet.fome = Math.max(0, Math.min(pet.fome, 100));
+        pet.saude = Math.max(0, Math.min(pet.saude, 100));
+        updateGameInterface();
+      } else {
+        addToConsole(`Não está com fome.`)
+      }
+    }
+  
+    // Ação de brincar com o Tamagotchi
+    function play() {
+      if (pet.energia > 0) {
+        pet.felicidade += 20;
+        pet.energia -= 1;
+        pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
+        pet.energia = Math.max(0, Math.min(pet.energia, 10));
+        updateGameInterface();
+      } else {
+        addToConsole(`Não há energia suficiente.`)
+      }
+    }
+  
+    // Ação de limpar o Tamagotchi
+    function clean() {
+      if (pet.sujo > 0) {
+        pet.sujo -= 1;
+        pet.sujo = Math.max(0, pet.sujo);
+        updateGameInterface();
+      } else {
+        addToConsole(`Não está sujo.`)
+      }
+    }
+  
+    // Ação de fazer o Tamagotchi dormir
+    function sleep() {
+      pet.isSleeping = true;
+      pet.saude += 10;
+      pet.fome -= 30;
+      pet.saude = Math.max(0, Math.min(pet.saude, 100));
+      pet.fome = Math.max(0, Math.min(pet.fome, 100));
+      updateGameInterface();
+    }
+  
+    // Ação de dar remédio ao Tamagotchi
+    function giveMedicine() {
+      pet.saude += 30;
+      pet.felicidade -= 10;
+      pet.saude = Math.max(0, Math.min(pet.saude, 100));
+      pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
+      addToConsole(`<shake>Deu remédio para ${pet.nome} e ganhou + 30 SAUDE e perdeu 10 FELICIDADE!</shake>`)
+      updateGameInterface();
+      
+    }
+  
+    // Faz o Tamagotchi evoluir a cada 10 dias
+    function evolve() {
+      if (pet.idade % 10 === 0) {
+        addToConsole(`${pet.nome} evoluiu!`)
+        // Lógica para evolução
+      }
+    }
+  
+    // Ação de passar o dia e atualizar o estado do Tamagotchi
+    function passDay() {
+      if (pet.saude <= 0){
+
+        addToConsole(`${pet.nome} morreu!`)
+        
+      } else {
+
+      
+      // 
+      pet.idade += 1;
+      pet.fome -= 10;
+      pet.saude -= 5;
+      pet.felicidade -= 5;
+      // 
+      pet.energia += 20;
+      pet.sujo += 1;
+      pet.energia = Math.max(0, Math.min(pet.energia, 10));
+      pet.sujo = Math.max(0, Math.min(pet.sujo, 3));
+      pet.fome = Math.max(0, Math.min(pet.fome, 100));
+      pet.saude = Math.max(0, Math.min(pet.saude, 100));
+      pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
+      addToConsole(getRandomPaimonPhrase());
+      
+
+      addToConsole(`<i>Dia</i> ${pet.idade}: <color = #FF0000>fome</color> ${pet.fome}, <url="http://aq.com">saúde</url> ${pet.saude}, felicidade ${pet.felicidade}, energia ${pet.energia}, sujo +1`);
+
+      updateGameInterface();
+      evolve();
+    }
+    }
+  
+    // Atualiza o estado do Tamagotchi a cada segundo
+    setInterval(passDay, 1000);
+  
+    // Adiciona os ouvintes de eventos aos botões
+    feedButton.addEventListener("click", feed);
+    playButton.addEventListener("click", play);
+    cleanButton.addEventListener("click", clean);
+    sleepButton.addEventListener("click", sleep);
+    medicineButton.addEventListener("click", giveMedicine);
+  
+    // Inicializa a interface do jogo
+    updateGameInterface();
+  </script>
+  
+  
+ 
+</body>
+</html>
