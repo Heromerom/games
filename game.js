@@ -523,15 +523,19 @@ function usarItem(idItem, quantidade) {
     pet.energia += itemInventario.modificadorEnergia;
     pet.sujo += itemInventario.modificadorSujo;
     pet.idade += itemInventario.modificadorIdade;
+    
+    if (itemInventario.modificadorFome > 0){
+      play.crunch();
+    }
     //pet.isSleeping += itemInventario.modificadorIsSleeping;
     pet.felicidade += itemInventario.modificadorFelicidade;
     pet.fome += itemInventario.modificadorFome;
-    
     pet.energia = Math.max(0, Math.min(pet.energia, 10));
 	  pet.sujo = Math.max(0, Math.min(pet.sujo, 3));
 	  pet.fome = Math.max(0, Math.min(pet.fome, 100));
 	  pet.saude = Math.max(0, Math.min(pet.saude, 100));
 	  pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
+    
     updateGameInterface();
     } else {
 
@@ -639,16 +643,19 @@ medicineButton.addEventListener("click", giveMedicine);
 // Inicializa a interface do jogo
 updateGameInterface();
 document.addEventListener('DOMContentLoaded', () => {
-	// Call the function to initialize tooltips
-    var notif = document.getElementById("notif")
+	
+    var notif = document.getElementById("notif");
+    var audio = document.getElementById("myAudio");
+    var crunch = document.getElementById("crunch");
+	  audio.volume = 0.4;
     notif.volume = 0.4;
+    crunch.volum = 0.4;
     addToConsole(`<b>Boas vindas!</b>`)
 	passDay();
 	setInterval(Paimon, 15000); // Executa a função Paimon após 5 segundos
 	setInterval(passDay, 10000);
     setTimeout(addItem(1,10), 2000);
-    var audio = document.getElementById("myAudio");
-	audio.volume = 0.4;
+    
       // Atualizar a exibição do inventário quando a página for carregada
     atualizarInventario();
 
