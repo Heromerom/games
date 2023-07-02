@@ -3,6 +3,13 @@ body {
     color: white;
    
 }
+
+.bg-image {
+  background-image: url('https://2.bp.blogspot.com/-YSRL7xmCD2Q/XQ8eHaJ9wkI/AAAAAAAAHtA/0-bVcL3HJmQ4eCCCJY8Sq9y0tGKoVw3IwCKgBGAs/w1920-h1080-c/genshin-impact-uhdpaper.com-4K-1.jpg');
+  background-size: cover;
+  background-position: center;  
+}
+
 .bartext {
     position: absolute;
     top: 50%;
@@ -20,7 +27,7 @@ body {
     font-family: system-ui;
     background-color: #293342;
     color: #f9fafb;
-    padding: 1rem;
+    padding: 0.5rem;
     border-width: 1px;
     border-color:#ffffff1a;
     border-radius: 0.5rem;
@@ -36,7 +43,7 @@ body {
     font-family: helvetica;
     list-style-type: none;
     margin: 0;
-    padding: 0;
+    padding: 0.2rem;
     max-height: 250px;
     overflow-y: auto;
 }
@@ -45,8 +52,9 @@ body {
 }
 /* Estilo para a scrollbar */
 .console ul::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
     border-radius: 12px;
+    margin-left: 0.2rem;
 }
 .console ul::-webkit-scrollbar-track {
     border-radius: 12px;
@@ -62,7 +70,7 @@ body {
 
 .card {
     background-color: #374151ee;
-    padding: 2rem;
+    padding: 0.8rem;
     border-radius: 0.5rem;
     width: 700px;
     height: 400px;

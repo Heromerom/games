@@ -1,0 +1,147 @@
+[
+  {
+    "group": "health",
+    "phrase": "Paimon está se sentindo fraca...",
+    "probability": 0.8
+  },
+  {
+    "group": "health",
+    "phrase": "Paimon precisa de cuidados médicos!",
+    "probability": 0.6
+  },
+  {
+    "group": "health",
+    "phrase": "Paimon está ficando doente...",
+    "probability": 0.5
+  },
+  {
+    "group": "health",
+    "phrase": "Paimon não está se sentindo bem...",
+    "probability": 0.5
+  },
+  {
+    "group": "health",
+    "phrase": "Paimon está fraca e cansada...",
+    "probability": 0.4
+  },
+  {
+    "group": "health",
+    "phrase": "Paimon precisa de descanso e cuidados!",
+    "probability": 0.3
+  },
+  {
+    "group": "health",
+    "phrase": "Paimon está perdendo a força...",
+    "probability": 0.05
+  },
+  {
+    "group": "health",
+    "phrase": "Paimon está se sentindo cada vez pior...",
+    "probability": 0.05
+  },
+  {
+    "group": "hunger",
+    "phrase": "Paimon não aguenta mais de fome...",
+    "probability": 0.6
+  },
+  {
+    "group": "hunger",
+    "phrase": "Paimon precisa de um banquete!",
+    "probability": 0.5
+  },
+  {
+    "group": "hunger",
+    "phrase": "Paimon está faminta!",
+    "probability": 0.5
+  },
+  {
+    "group": "hunger",
+    "phrase": "Paimon não come há horas!",
+    "probability": 0.5
+  },
+  {
+    "group": "hunger",
+    "phrase": "Paimon precisa de comida para sobreviver.",
+    "probability": 0.4
+  },
+  {
+    "group": "hunger",
+    "phrase": "Paimon quer um lanche gostoso!",
+    "probability": 0.3
+  },
+  {
+    "group": "hunger",
+    "phrase": "Paimon está ficando mais fraca a cada minuto...",
+    "probability": 0.05
+  },
+  {
+    "group": "hunger",
+    "phrase": "Paimon está definhando de fome...",
+    "probability": 0.05
+  },
+  {
+    "group": "happiness",
+    "phrase": "Paimon não está feliz...",
+    "probability": 0.8
+  },
+  {
+    "group": "happiness",
+    "phrase": "Paimon está triste e solitária...",
+    "probability": 0.6
+  },
+  {
+    "group": "happiness",
+    "phrase": "Paimon precisa de alegria e diversão!",
+    "probability": 0.6
+  },
+  {
+    "group": "happiness",
+    "phrase": "Paimon está se sentindo sozinha...",
+    "probability": 0.5
+  },
+  {
+    "group": "happiness",
+    "phrase": "Paimon quer se divertir!",
+    "probability": 0.4
+  },
+  {
+    "group": "happiness",
+    "phrase": "Paimon precisa de um pouco de alegria na vida...",
+    "probability": 0.3
+  },
+  {
+    "group": "happiness",
+    "phrase": "Paimon está ficando cada vez mais triste...",
+    "probability": 0.05
+  },
+  {
+    "group": "happiness",
+    "phrase": "Paimon está perdendo a esperança...",
+    "probability": 0.05
+  },
+  {
+    "group": "neutral",
+    "phrase": "Olá, viajante!",
+    "probability": 0.2
+  },
+  {
+    "group": "neutral",
+    "phrase": "Como posso ajudar você hoje?",
+    "probability": 0.2
+  },
+  {
+    "group": "neutral",
+    "phrase": "Estou aqui para servir!",
+    "probability": 0.2
+  },
+  {
+    "group": "neutral",
+    "phrase": "Paimon está pronta para mais aventuras!",
+    "probability": 0.1
+  },
+  {
+    "group": "neutral",
+    "phrase": "Paimon está curiosa sobre o que vem a seguir...",
+    "probability": 0.1
+  }
+]

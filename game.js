@@ -16,6 +16,28 @@ const pet = {
 	"play-img-url": "https://i.redd.it/aoiyeqhhlvf81.gif"
 };
 
+const tipoClasses = {
+  comida: [
+    "bg-yellow-100",
+    "text-yellow-800",
+    "dark:bg-yellow-900",
+    "dark:text-yellow-300"
+  ],
+  bebida: [
+    "bg-blue-100",
+    "text-blue-800",
+    "dark:bg-blue-900",
+    "dark:text-blue-300"
+  ],
+  erva: [
+    "bg-green-100",
+    "text-green-800",
+    "dark:bg-green-900",
+    "dark:text-green-300"
+  ],
+  // Adicione outros tipos e suas classes aqui, se necessário.
+};
+
 const cleanlinessDescriptions = {
   0: '🧼 Limpa',
   1: '🧼 Mal-cheiro',
@@ -137,8 +159,6 @@ const petEnergyElement = document.getElementById("petEnergy");
 const petSleepingElement = document.getElementById("petSleeping");
 const petWashingElement = document.getElementById("petWashing");
 const petImageElement = document.getElementById("petImage");
-
-
 const feedButton = document.getElementById("feedButton");
 const playButton = document.getElementById("playButton");
 const cleanButton = document.getElementById("cleanButton");
@@ -190,8 +210,7 @@ function addToConsole(message) {
 
 // Função para formatar a mensagem com formatações personalizadas
 function formatMessage(message) {
-    
-
+  
   message = message.replace(/<html>(.*)<\/html>/g, "$1");
 	// Formatação para ERRO
 	message = message.replace(/<erro>(.*?)<\/erro>/g, "<color = #FF0000>[ERRO] $1</color>");
@@ -218,7 +237,7 @@ function formatMessage(message) {
 // Atualiza o estado dos botões com base nas necessidades do Tamagucci
 function updateButtons() {
 	feedButton.disabled = pet.isSleeping || pet.fome >= 100 || pet.saude <= 0;
-	playButton.disabled = pet.isSleeping || pet.felicidade >= 100 || pet.saude <= 0;
+	playButton.disabled = pet.isSleeping || pet.saude <= 0;
 	cleanButton.disabled = pet.isSleeping || pet.sujo === 0 || pet.saude <= 0;
 	sleepButton.disabled = pet.isSleeping || pet.saude <= 0;
 	medicineButton.disabled = pet.isSleeping || pet.saude >= 100 || pet.saude <= 0;
@@ -326,8 +345,9 @@ function giveMedicine() {
 
 // Array para armazenar os itens existentes
 const itensExistentes = [
-  { id: 1, tipo: "comida", nome: "Maçã", modificadorSaude: 10, modificadorFelicidade: 5, modificadorFome: 5, modificadorSujo: 3, modificadorIdade: 0, modificadorEnergia: 0, modificadorIsSleeping: false, precoCompra: 5, precoVenda: 2 },
-  { id: 2, tipo: "comida", nome: "Maça 2", modificadorSaude: 20, modificadorFelicidade: 5, modificadorFome: 5, modificadorSujo: 3, modificadorIdade: 0, modificadorEnergia: 0, modificadorIsSleeping: false, precoCompra: 5, precoVenda: 2 }
+  { id: 1, tipo: "comida", nome: "Maçã", modificadorSaude: 10, modificadorFelicidade: 5, modificadorFome: 5, modificadorSujo: 1, modificadorIdade: 0, modificadorEnergia: 0, modificadorIsSleeping: false, precoCompra: 5, precoVenda: 2, raridade: "comum", descricao:"Uma maçã vermelha e brilhante. Parece deliciosa!", fraseConsumo: "Mhmm! Que maçã deliciosa!"},
+  { id: 2, tipo: "erva", nome: "Dandelion", modificadorSaude: 20, modificadorFelicidade: -2, modificadorFome: -2, modificadorSujo: 0, modificadorIdade: 0, modificadorEnergia: 0, modificadorIsSleeping: false, precoCompra: 5, precoVenda: 2, raridade: "incomum" },
+  { id: 3, tipo: "bebida", nome: "Mel de Abelha Rainha", modificadorSaude: 10, modificadorFelicidade: 20, modificadorFome: 60, modificadorSujo: 3, modificadorIdade: 0, modificadorEnergia: -1, modificadorIsSleeping: false, precoCompra: 5, precoVenda: 2, raridade: "valioso" }
   // Adicione mais itens existentes conforme necessário
 ];
 
@@ -338,6 +358,7 @@ let inventario = [];
 
   // Função para atualizar a exibição do inventário no HTML
   function atualizarInventario() {
+    sortInventory();
     const inventarioList = document.getElementById("inventario-list");
     inventarioList.innerHTML = "";
   
@@ -361,19 +382,21 @@ let inventario = [];
         "whitespace-nowrap",
         "dark:text-white"
       );
-  
+      
       const span = document.createElement("span");
-      span.classList.add(
-        "bg-yellow-100",
-        "text-yellow-800",
+      
+    if (item.tipo && item.tipo in tipoClasses) {
+      const classes = tipoClasses[item.tipo];
+      span.classList.add(...classes);
+    }
+      
+      span.classList.add(        
         "text-xs",
         "text-medium",
         "mr-2",
         "px-2.5",
         "py-0.5",
-        "rounded-full",
-        "dark:bg-yellow-900",
-        "dark:text-yellow-300"
+        "rounded-full"
       );
       span.textContent = item.tipo;
       div.appendChild(span);
@@ -421,6 +444,34 @@ let inventario = [];
       inventarioList.appendChild(li);
     }
   }
+
+function sortInventory() {
+  inventario.sort((itemA, itemB) => {
+    // Ordenar pelo tipo do item
+    if (itemA.tipo < itemB.tipo) {
+      return -1;
+    } else if (itemA.tipo > itemB.tipo) {
+      return 1;
+    }
+
+    // Se o tipo for o mesmo, ordenar pela quantidade do item
+    if (itemA.quantidade < itemB.quantidade) {
+      return -1;
+    } else if (itemA.quantidade > itemB.quantidade) {
+      return 1;
+    }
+
+    // Se a quantidade for a mesma, ordenar pela raridade do item
+    if (itemA.raridade < itemB.raridade) {
+      return -1;
+    } else if (itemA.raridade > itemB.raridade) {
+      return 1;
+    }
+
+    return 0;
+  });
+}
+
   
 // Função para adicionar um item ao inventário
 function addItem(idItem, quantidade) {
@@ -542,13 +593,15 @@ function dateEvent() {
 
     if (pet.idade % 7 === 0) {
         // A CADA 7 DIAS
-        addToConsole(`1 SEMANA`)
+        addToConsole(`1 SEMANA - 1 saco de maçã`);
+        addItem(1,5);
             
     }
 
     if (pet.idade % 30 === 0) {
         // A CADA 1 MES
         addToConsole(`<aviso>1 MES</aviso>`)
+        addItem(2,3);
     }
 
     if (pet.idade % 90 === 0) {
