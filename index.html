@@ -132,11 +132,11 @@
         </div>
       </div>
       <div class="flex justify-center mt-4 space-x-2">
-        <button id="medicineButton" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Remédio</button>
-        <button id="feedButton" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Alimentar</button>
-        <button id="playButton" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Brincar</button>
-        <button id="cleanButton" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Limpar</button>
-        <button id="sleepButton" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Dormir</button>
+        <button id="medicineButton" title="Remédio" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Remédio</button>
+        <button id="feedButton" title="Alimentar" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Alimentar</button>
+        <button id="playButton" title="Brincar" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Brincar</button>
+        <button id="cleanButton" title="Limpar" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Limpar</button>
+        <button id="sleepButton" title="Dormir" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded cursor-pointer" disabled>Dormir</button>
         
       </div>
       <div class="flex justify-center mt-4">
@@ -155,33 +155,15 @@
 
   </div>
 
+  <audio id="myAudio" src="https://github.com/Heromerom/games/blob/game-tamagucci/DiceGame.mp3" autoplay></audio>
 
   <script>
-      // Seleciona todos os botões
-const buttons = document.querySelectorAll('button');
 
-// Define os textos de explicação para cada botão
-const tooltips = {
-  medicineButton: 'Clique para dar o remédio ao seu animal de estimação',
-  feedButton: 'Clique para alimentar o seu animal de estimação',
-  playButton: 'Clique para brincar com o seu animal de estimação',
-  cleanButton: 'Clique para limpar o seu animal de estimação',
-  sleepButton: 'Clique para fazer o seu animal de estimação dormir',
-};
-
-// Percorre cada botão e adiciona uma tooltip com o texto de explicação correspondente
-buttons.forEach((button) => {
-  const tooltipText = tooltips[button.id];
-  tippy(button, {
-    content: tooltipText,
-    allowHTML: true,
-  });
-});  
     const pet = {
       nome: "Paimon",
       idade: 0,
       saude: 100,
-      fome: 70,
+      fome: 80,
       felicidade: 100,
       energia: 0,
       isSleeping: false,
@@ -301,7 +283,7 @@ function addToConsole(message) {
 function formatMessage(message) {
 
   // Formatação para ERRO
-  message = message.replace(/<erro>(.*?)<\/error>/g, "<color = #FF0000>[ERRO] $1</colo>");
+  message = message.replace(/<erro>(.*?)<\/erro>/g, "<color = #FF0000>[ERRO] $1</color>");
   // Formatação para SUCESSO
   message = message.replace(/<sucesso>(.*?)<\/aviso>/g, "<color = #FF0000>[SUCESSO] $1</color>");
   // Formatação para AVISO 
@@ -495,6 +477,18 @@ function formatMessage(message) {
   
     // Inicializa a interface do jogo
     updateGameInterface();
+    document.addEventListener('DOMContentLoaded', () => {
+  // Call the function to initialize tooltips
+  addToConsole(`<b>Boas vindas!</b>`)
+  passDay();
+  var audio = document.getElementById("myAudio");
+      audio.volume = 0.4;
+    });
+    audio.addEventListener("ended", function() {
+      audio.currentTime = 0; // Reinicia a reprodução para o início
+      audio.play(); // Inicia a reprodução novamente
+    });
+  
   </script>
   
   
