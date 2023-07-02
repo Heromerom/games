@@ -421,9 +421,12 @@ function formatMessage(message) {
       pet.fome -= 10;
       pet.saude -= 5;
       pet.felicidade -= 5;
-      // 
-      pet.energia += 20;
+      //
+      if (pet.idade % 2 === 0){
+      pet.energia += 1;  
       pet.sujo += 1;
+      }
+      
       pet.energia = Math.max(0, Math.min(pet.energia, 10));
       pet.sujo = Math.max(0, Math.min(pet.sujo, 3));
       pet.fome = Math.max(0, Math.min(pet.fome, 100));
