@@ -104,7 +104,7 @@
           <h6 class="text-1xl mb-1" id="petEnergy"></h6>
           <h6 class="text-1xl mb-1" id="petSleeping"></h6>
         </div>
-        <img src="https://mario.wiki.gallery/images/3/3f/MPS_Boo_Artwork.png" alt="Tamagotchi" id="petImage" class="w-40 h-40">
+        <img src="https://mario.wiki.gallery/images/3/3f/MPS_Boo_Artwork.png" alt="Tamagucci" id="petImage" class="w-40 h-40">
       </div>
 
       <div class="flex justify-between space-x-2">
@@ -224,7 +224,7 @@
     phrase = phrases[Math.floor(Math.random() * phrases.length)];
   }
 
-  return `🔵 Paimon: ${phrase}`;
+  return `<color = #00FFFF>🔵 PAIMON:</color> ${phrase}`;
 }
 
   
@@ -394,7 +394,7 @@ function formatMessage(message) {
       pet.felicidade -= 10;
       pet.saude = Math.max(0, Math.min(pet.saude, 100));
       pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
-      addToConsole(`<shake>Deu remédio para ${pet.nome} e ganhou + 30 SAUDE e perdeu 10 FELICIDADE!</shake>`)
+      addToConsole(`Deu remédio para ${pet.nome} e ganhou + 30 SAUDE e perdeu 10 FELICIDADE!`)
       updateGameInterface();
       
     }
@@ -432,7 +432,7 @@ function formatMessage(message) {
       addToConsole(getRandomPaimonPhrase());
       
 
-      addToConsole(`<i>Dia</i> ${pet.idade}: <color = #FF0000>fome</color> ${pet.fome}, <url="http://aq.com">saúde</url> ${pet.saude}, felicidade ${pet.felicidade}, energia ${pet.energia}, sujo +1`);
+      addToConsole(`<b> DIA  ${pet.idade}:</i> fome ${pet.fome}, ${pet.saude}, felicidade ${pet.felicidade}, energia ${pet.energia}, sujo +1`);
 
       updateGameInterface();
       evolve();
