@@ -279,8 +279,8 @@ function formatMessage(message) {
 
 // Atualiza o estado dos botões com base nas necessidades do Tamagucci
 function updateButtons() {
-	// feedButton.disabled = pet.isSleeping || pet.fome >= 100 || pet.saude <= 0;
-	// medicineButton.disabled = pet.isSleeping || pet.saude >= 100 || pet.saude <= 0;
+	//  feedButton.disabled = pet.isSleeping || pet.fome >= 100 || pet.saude <= 0;
+	//  medicineButton.disabled = pet.isSleeping || pet.saude >= 100 || pet.saude <= 0;
   playButton.disabled = pet.isSleeping || pet.saude <= 0;
 	cleanButton.disabled = pet.isSleeping || pet.sujo === 0 || pet.saude <= 0;
 	sleepButton.disabled = pet.isSleeping || pet.saude <= 0;
