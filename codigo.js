@@ -41,21 +41,6 @@ const adventureDescriptions = {
   ],
 };
 
-// Função para escolher uma descrição de aventura aleatória baseada na categoria
-function getRandomAdventureDescription(category, pet) {
-  const descriptions = adventureDescriptions[category];
-  const sortedDescriptions = descriptions.sort(
-    (a, b) => b.probability - a.probability
-  );
-
-  const randomIndex = getRandomIndexWithProbability(sortedDescriptions);
-  const description = sortedDescriptions[randomIndex].description;
-
-  // Substituindo o nome do pet na descrição
-  const replacedDescription = description.replace("${pet.nome}", pet.nome);
-
-  return replacedDescription;
-}
 
 
 // Definindo os itens de loot por categoria e suas probabilidades
@@ -164,7 +149,6 @@ function getRandomAdventureDescription(category, pet) {
 
   return replacedDescription;
 }
-
 // Exemplo de utilização do código para gerar uma aventura
 const pet = {
   nome: "Paimon",
