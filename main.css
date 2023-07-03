@@ -4,6 +4,8 @@ body {
    
 }
 
+#bgm { display: none }
+
 .bg-image {
   background-image: url('https://2.bp.blogspot.com/-YSRL7xmCD2Q/XQ8eHaJ9wkI/AAAAAAAAHtA/0-bVcL3HJmQ4eCCCJY8Sq9y0tGKoVw3IwCKgBGAs/w1920-h1080-c/genshin-impact-uhdpaper.com-4K-1.jpg');
   background-size: cover;

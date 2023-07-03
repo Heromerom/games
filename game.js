@@ -280,7 +280,7 @@ function formatMessage(message) {
 // Atualiza o estado dos botões com base nas necessidades do Tamagucci
 function updateButtons() {
 	//  feedButton.disabled = pet.isSleeping || pet.fome >= 100 || pet.saude <= 0;
-	//  medicineButton.disabled = pet.isSleeping || pet.saude >= 100 || pet.saude <= 0;
+	// medicineButton.disabled = pet.isSleeping || pet.saude >= 100 || pet.saude <= 0;
   playButton.disabled = pet.isSleeping || pet.saude <= 0;
 	cleanButton.disabled = pet.isSleeping || pet.sujo === 0 || pet.saude <= 0;
 	sleepButton.disabled = pet.isSleeping || pet.saude <= 0;
@@ -947,14 +947,10 @@ bgm.addEventListener("canplaythrough", function() {
     bgm.play();
 });
 
-    setTimeout(function() {
-    bgm.play();
-}, 1000);
+
+    
    
-    setTimeout(crunch.play(), 1000)
-    setTimeout(crunch2.play(), 1000)
-    setTimeout(slurp.play(),1000)
-    setTimeout(bgm.play(), 1000);
+
       // Atualizar a exibição do inventário quando a página for carregada
     atualizarInventario();
 
