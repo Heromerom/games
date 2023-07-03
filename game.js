@@ -13,7 +13,9 @@ const pet = {
 	"sad-img-url": "https://64.media.tumblr.com/a6def43e95357d48c8f62c6900be704a/53828a39d1e162b1-a7/s500x750/e7caafa817b1f869adf0e24ab8856f4157ebe4bc.png",
 	"neutral-img-url": "https://mystickermania.com/cdn/stickers/genshin-impact/genshin-paimon-512x512.png",
 	"think-img-url": "https://s3.getstickerpack.com/storage/uploads/sticker-pack/genshin-paimon/sticker_16.png",
-	"play-img-url": "https://i.redd.it/aoiyeqhhlvf81.gif"
+	"play-img-url": "https://i.redd.it/aoiyeqhhlvf81.gif",
+  "heavy-img-url": "https://i.pinimg.com/originals/17/43/d7/1743d764b8439f6f2a941ce34d8be254.png",
+  "worried-img-url": "https://i.pinimg.com/originals/21/fa/2d/21fa2df706e1e2d2b0c9046aa5e18b18.png"
 };
 
 const tipoClasses = {
@@ -51,6 +53,7 @@ const sleepingDescriptions = {
 };
 
 function getRandomPaimonPhrase() {
+  if (pet.isSleeping){return}
   const health = pet.saude;
   const hunger = pet.fome;
   const happiness = pet.felicidade;
@@ -140,16 +143,48 @@ function getRandomPaimonPhrase() {
 
   return `<html><svg class="w-3 h-3 inline text-white-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
     <path d="M18 0H2a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2v4a1 1 0 0 0 1.707.707L10.414 13H18a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5 4h2a1 1 0 1 1 0 2h-2a1 1 0 1 1 0-2ZM5 4h5a1 1 0 1 1 0 2H5a1 1 0 0 1 0-2Zm2 5H5a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Zm9 0h-6a1 1 0 0 1 0-2h6a1 1 0 1 1 0 2Z"/>
-  </svg></html> <color = #00FFFF><b>PAIMON:</b></color> ${randomPhrase.phrase}`;
+  </svg></html> <color = #00FFFF><b>${pet.nome}:</b></color> ${randomPhrase.phrase}`;
 }
 
 
 function Paimon() {
-    if (pet.saude > 0){
+  
+  if (pet.saude > 0){
 	addToConsole(getRandomPaimonPhrase());
     notif.play();
+    
+  }
 }
+
+// Obtém a URL da imagem com base no estado do Tamagucci
+function getPetImage() {
+	if (pet.isSleeping === true) {
+    // Dormindo
+		return pet["sleep-img-url"];
+	
+  }
+  if (pet.saude < 40) {
+		return pet["sad-img-url"];
+	}
+  
+  if (pet.saude <= 60) {
+    return pet["think-img-url"]
+		
+	}
+  
+  if (pet.felicidade <= 50) {
+		return pet["neutral-img-url"];
+	}
+  
+  if (pet.saude > 90 && pet.felicidade > 90 && pet.fome > 90){
+		return pet["play-img-url"];
+	} else {
+    return pet["worried-img-url"];
+    
+  }
+
 }
+
 
 // Cache de elementos DOM
 
@@ -159,11 +194,11 @@ const petEnergyElement = document.getElementById("petEnergy");
 const petSleepingElement = document.getElementById("petSleeping");
 const petWashingElement = document.getElementById("petWashing");
 const petImageElement = document.getElementById("petImage");
-const feedButton = document.getElementById("feedButton");
+//const medicineButton = document.getElementById("medicineButton");
+//const feedButton = document.getElementById("feedButton");
 const playButton = document.getElementById("playButton");
 const cleanButton = document.getElementById("cleanButton");
 const sleepButton = document.getElementById("sleepButton");
-const medicineButton = document.getElementById("medicineButton");
 const emojiElement = document.getElementById("emoji");
 const consoleListElement = document.getElementById("consoleList");
 // Progress Bars
@@ -173,15 +208,15 @@ const happinessBarElement = document.getElementById("happinessBar");
 const hungerBarText = document.getElementById("hungerBarText");
 const hapinessBarText = document.getElementById("hapinessBarText");
 const healthBarText = document.getElementById("healthBarText");
+// 
 
 
 
 // Atualiza a interface do jogo
 function updateGameInterface() {
     
-    const petCleanliness = cleanlinessDescriptions[pet.sujo] || '';
-    const petDormindo = sleepingDescriptions[pet.isSleeping] || '';
-
+const petCleanliness = cleanlinessDescriptions[pet.sujo] || '';
+const petDormindo = sleepingDescriptions[pet.isSleeping] || '';
 	petNameElement.textContent = pet.nome;
 	petAgeElement.textContent = `📅 ${pet.idade} dias`;
 	petEnergyElement.textContent = `⚡ ${pet.energia}`;
@@ -200,12 +235,20 @@ function updateGameInterface() {
 }
 
 // Função para adicionar uma mensagem ao console
+let lastConsoleMessage = "";
 function addToConsole(message) {
-	const li = document.createElement("li");
-	li.innerHTML = formatMessage(message);
-	consoleListElement.appendChild(li);
-	consoleListElement.scrollTop = consoleListElement.scrollHeight;
-
+  const formattedMessage = formatMessage(message);
+  
+  if (formattedMessage === lastConsoleMessage) {
+    return; // Se a mensagem for igual à anterior, não faz nada
+  }
+  
+  lastConsoleMessage = formattedMessage; // Atualiza a última mensagem exibida
+  
+  const li = document.createElement("li");
+  li.innerHTML = formattedMessage;
+  consoleListElement.appendChild(li);
+  consoleListElement.scrollTop = consoleListElement.scrollHeight;
 }
 
 // Função para formatar a mensagem com formatações personalizadas
@@ -236,25 +279,12 @@ function formatMessage(message) {
 
 // Atualiza o estado dos botões com base nas necessidades do Tamagucci
 function updateButtons() {
-	feedButton.disabled = pet.isSleeping || pet.fome >= 100 || pet.saude <= 0;
-	playButton.disabled = pet.isSleeping || pet.saude <= 0;
+	// feedButton.disabled = pet.isSleeping || pet.fome >= 100 || pet.saude <= 0;
+	// medicineButton.disabled = pet.isSleeping || pet.saude >= 100 || pet.saude <= 0;
+  playButton.disabled = pet.isSleeping || pet.saude <= 0;
 	cleanButton.disabled = pet.isSleeping || pet.sujo === 0 || pet.saude <= 0;
 	sleepButton.disabled = pet.isSleeping || pet.saude <= 0;
-	medicineButton.disabled = pet.isSleeping || pet.saude >= 100 || pet.saude <= 0;
-}
-
-
-// Obtém a URL da imagem com base no estado do Tamagucci
-function getPetImage() {
-	if (pet.isSleeping === true) {
-		return pet["sleep-img-url"];
-	} else if (pet.saude <= 50) {
-		return pet["sad-img-url"];
-	} else if (pet.felicidade <= 50) {
-		return pet["neutral-img-url"];
-	} else {
-		return pet["happy-img-url"];
-	}
+	
 }
 
 // Mostra um emoji indicando as necessidades do Tamagucci
@@ -288,6 +318,7 @@ function feed() {
 		pet.saude -= 10;
 		pet.fome = Math.max(0, Math.min(pet.fome, 100));
 		pet.saude = Math.max(0, Math.min(pet.saude, 100));
+      crunch.play();
 		updateGameInterface();
 	} else {
 		addToConsole(`<erro>Não está com fome.</erro>`)
@@ -297,6 +328,7 @@ function feed() {
 // Ação de brincar com o Tamagucci
 function play() {
 	if (pet.energia > 0) {
+    generateAdventure(pet);
 		pet.felicidade += 10;
 		pet.energia -= 1;
 		pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
@@ -337,24 +369,94 @@ function giveMedicine() {
 	pet.saude = Math.max(0, Math.min(pet.saude, 100));
 	pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
 	addToConsole(`<sucesso>Deu remédio para ${pet.nome} e ganhou + 30 SAUDE e perdeu 10 FELICIDADE!</sucesso>`)
-	updateGameInterface();
-
+  
+  updateGameInterface();
+ 
 }
 
-// Inventário
+// ITENS E INVENTÁRIO -------------------------------------------------------------------------------------
 
 // Array para armazenar os itens existentes
 const itensExistentes = [
-  { id: 1, tipo: "comida", nome: "Maçã", modificadorSaude: 10, modificadorFelicidade: 5, modificadorFome: 5, modificadorSujo: 1, modificadorIdade: 0, modificadorEnergia: 0, modificadorIsSleeping: false, precoCompra: 5, precoVenda: 2, raridade: "comum", descricao:"Uma maçã vermelha e brilhante. Parece deliciosa!", fraseConsumo: "Mhmm! Que maçã deliciosa!"},
-  { id: 2, tipo: "erva", nome: "Dandelion", modificadorSaude: 20, modificadorFelicidade: -2, modificadorFome: -2, modificadorSujo: 0, modificadorIdade: 0, modificadorEnergia: 0, modificadorIsSleeping: false, precoCompra: 5, precoVenda: 2, raridade: "incomum" },
-  { id: 3, tipo: "bebida", nome: "Mel de Abelha Rainha", modificadorSaude: 10, modificadorFelicidade: 20, modificadorFome: 60, modificadorSujo: 3, modificadorIdade: 0, modificadorEnergia: -1, modificadorIsSleeping: false, precoCompra: 5, precoVenda: 2, raridade: "valioso" }
-  // Adicione mais itens existentes conforme necessário
+  {
+    id: 1,
+    tipo: "comida",
+    nome: "Maçã",
+    raridade: "comum",
+    descricao: "Uma maçã vermelha e brilhante. Parece deliciosa!",
+    fraseConsumo: "Mhmm! Que maçã deliciosa!",
+    modificadorSaude: 10,
+    modificadorFelicidade: 5,
+    modificadorFome: 5,
+    modificadorSujo: 0,
+    modificadorIdade: 0,
+    modificadorEnergia: 0,
+    modificadorIsSleeping: false,
+    precoCompra: 5,
+    precoVenda: 2,
+    
+    
+  },
+  {
+    id: 2,
+    tipo: "erva",
+    nome: "Dente-de-leão",
+    raridade: "incomum",
+    descricao: "É valorizado por suas propriedades medicinais. Suas raízes, folhas e flores são frequentemente utilizadas na medicina tradicional para tratar uma variedade de condições, incluindo problemas digestivos, inflamação, problemas de pele e desintoxicação do fígado.",
+    fraseConsumo:"Eww! Podia ser mais gostoso...",
+    modificadorSaude: 20,
+    modificadorFelicidade: -2,
+    modificadorFome: -2,
+    modificadorSujo: 0,
+    modificadorIdade: 0,
+    modificadorEnergia: 0,
+    modificadorIsSleeping: false,
+    precoCompra: 5,
+    precoVenda: 2
+    
+  },
+  {
+    id: 3,
+    tipo: "bebida",
+    nome: "Mel de Abelha Rainha",
+    raridade: "valioso",
+    descricao: "o Mel de Abelha Rainha é um verdadeiro tesouro culinário. Além de seu irresistível paladar, é apreciado por seus benefícios para a saúde, proporcionando uma dose de doçura e bem-estar.",
+    fraseConsumo: "Parece até nectar dos deuses!",
+    modificadorSaude: 10,
+    modificadorFelicidade: 20,
+    modificadorFome: 60,
+    modificadorSujo: 1,
+    modificadorIdade: 0,
+    modificadorEnergia: -1,
+    modificadorIsSleeping: false,
+    precoCompra: 0,
+    precoVenda: 0
+    
+  },
+  {
+    id: 4,
+    tipo: "bebida",
+    nome: "Energético",
+    raridade: "comum",
+    descricao: "Com um pouco de Taurina, quem tomar esse veneno disfaçado de nectar vai ganhr muita energia.",
+    fraseConsumo: "Estou me sentindo ENERGIZADA!!",
+    modificadorSaude: -5,
+    modificadorFelicidade: 5,
+    modificadorFome: 1,
+    modificadorSujo: 0,
+    modificadorIdade: 0,
+    modificadorEnergia: 2,
+    modificadorIsSleeping: false,
+    precoCompra: 0,
+    precoVenda: 0
+    
+  }
 ];
+
+  // Adicione mais itens existentes conforme necessár
 
 // Array para armazenar o inventário do jogador
 let inventario = [];
-
-  // ...código JavaScript existente...
 
   // Função para atualizar a exibição do inventário no HTML
   function atualizarInventario() {
@@ -485,6 +587,9 @@ function addItem(idItem, quantidade) {
         id: itemExistente.id,
         tipo: itemExistente.tipo,
         nome: itemExistente.nome,
+        raridade: itemExistente.raridade,
+        descricao: itemExistente.descricao,
+        fraseConsumo: itemExistente.fraseConsumo,
         quantidade: quantidade,
         modificadorSaude: itemExistente.modificadorSaude,
         modificadorFelicidade: itemExistente.modificadorFelicidade,
@@ -517,16 +622,13 @@ function usarItem(idItem, quantidade) {
   if (itemInventario && itemInventario.quantidade > 0 && pet.isSleeping === false && pet.saude > 0) {
     // Retira quantidade do inventário
     itemInventario.quantidade -= quantidade;
-
+    
     // Atualiza os dados
     pet.saude += itemInventario.modificadorSaude;
     pet.energia += itemInventario.modificadorEnergia;
     pet.sujo += itemInventario.modificadorSujo;
     pet.idade += itemInventario.modificadorIdade;
     
-    if (itemInventario.modificadorFome > 0){
-      play.crunch();
-    }
     //pet.isSleeping += itemInventario.modificadorIsSleeping;
     pet.felicidade += itemInventario.modificadorFelicidade;
     pet.fome += itemInventario.modificadorFome;
@@ -536,7 +638,25 @@ function usarItem(idItem, quantidade) {
 	  pet.saude = Math.max(0, Math.min(pet.saude, 100));
 	  pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
     
+    // SFX Consumo
+    if (itemInventario.tipo === "comida"){
+      crunch.play();
+    }
+    
+    if (itemInventario.tipo === "erva"){
+      crunch2.play();
+    }
+    
+    if (itemInventario.tipo === "bebida"){
+      slurp.play();
+    }
+    // Frase Consumo
+    addToConsole(`<html><svg class="w-3 h-3 inline text-white-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
+    <path d="M18 0H2a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2v4a1 1 0 0 0 1.707.707L10.414 13H18a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5 4h2a1 1 0 1 1 0 2h-2a1 1 0 1 1 0-2ZM5 4h5a1 1 0 1 1 0 2H5a1 1 0 0 1 0-2Zm2 5H5a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Zm9 0h-6a1 1 0 0 1 0-2h6a1 1 0 1 1 0 2Z"/>
+  </svg></html> <color = #00FFFF><b>`+ `${pet.nome}:` + `</b></color> ` + `${itemInventario.fraseConsumo}`)
+    
     updateGameInterface();
+  
     } else {
 
       if (itemInventario){
@@ -549,6 +669,163 @@ function usarItem(idItem, quantidade) {
         removeItem(itemInventario.id);
     }
 }
+
+// AVENTURA --------------------------------------------------------------------------------------------------------------------------
+
+// Definindo as categorias de aventura e suas probabilidades
+const adventureCategories = [
+  { category: "dungeon", probability: 30 }, // Probabilidade de 30%
+  { category: "exploration", probability: 25 }, // Probabilidade de 25%
+  { category: "assault", probability: 20 }, // Probabilidade de 20%
+  { category: "special_occasions", probability: 15 }, // Probabilidade de 15%
+  { category: "rare_events", probability: 10 }, // Probabilidade de 10%
+];
+
+// Definindo as descrições de aventura por categoria e suas probabilidades
+const adventureDescriptions = {
+  dungeon: [
+    { description: "Paimon explorou uma masmorra sombria e encontrou ${loot.item1} do item 1.", probability: 40 },
+    { description: "Paimon lutou contra monstros assustadores em uma masmorra e adquiriu ${loot.item2} do item 2.", probability: 30 },
+    { description: "Paimon encontrou um tesouro escondido na escuridão da masmorra e pegou ${loot.item3} do item 3.", probability: 20 },
+    { description: "Paimon derrotou um poderoso chefe na masmorra e obteve ${loot.item4} do item 4.", probability: 10 },
+  ],
+  exploration: [
+    { description: "Paimon explorou uma vasta floresta e coletou ${loot.item5} do item 5.", probability: 40 },
+    { description: "Paimon subiu em uma montanha íngreme durante sua exploração e encontrou ${loot.item6} do item 6.", probability: 30 },
+    { description: "Paimon nadou em um lago cristalino e descobriu ${loot.item7} do item 7.", probability: 20 },
+    { description: "Paimon encontrou uma relíquia antiga durante sua exploração e obteve ${loot.item8} do item 8.", probability: 10 },
+  ],
+  assault: [
+    { description: "Paimon foi atacada por inimigos enquanto viajava e perdeu ${loot.item9} do item 9.", probability: 40 },
+    { description: "Paimon lutou bravamente contra adversários perigosos e perdeu ${loot.item10} do item 10.", probability: 30 },
+    { description: "Paimon sofreu uma emboscada de inimigos e perdeu ${loot.item11} do item 11.", probability: 20 },
+    { description: "Paimon escapou por pouco de um ataque surpresa e perdeu ${loot.item12} do item 12.", probability: 10 },
+  ],
+  special_occasions: [
+    { description: "Paimon participou de um evento especial e recebeu ${loot.item13} do item 13 como recompensa.", probability: 40 },
+    { description: "Paimon foi homenageada durante uma ocasião especial e recebeu ${loot.item14} do item 14 como presente.", probability: 30},
+    { description: "Paimon participou de uma cerimônia grandiosa e recebeu ${loot.item15} do item 15 como lembrança.", probability: 20 },
+    { description: "Paimon se destacou em um evento especial e recebeu ${loot.item16} do item 16 como troféu.", probability: 10 },
+  ],
+  rare_events: [
+    { description: "Paimon encontrou um artefato lendário em um evento raro e adquiriu ${loot.item17} do item 17.", probability: 40 },
+    { description: "Paimon testemunhou um fenômeno extraordinário durante um evento raro e pegou ${loot.item18} do item 18.", probability: 30 },
+    { description: "Paimon foi premiada com um tesouro inestimável em um evento raro e obteve ${loot.item19} do item 19.", probability: 20 },
+    { description: "Paimon foi convidada para um evento exclusivo e ganhou ${loot.item20} do item 20 como reconhecimento.", probability: 10 },
+  ],
+};
+
+
+// Definindo os itens de loot por categoria e suas probabilidades
+const lootItemsByCategory = {
+  dungeon: [
+    { itemId: 1, maxQuantity: 3, probability: 40 }, // Item 1 com probabilidade de 40%
+    { itemId: 2, maxQuantity: 2, probability: 30 }, // Item 2 com probabilidade de 30%
+    { itemId: 3, maxQuantity: 1, probability: 20 }, // Item 3 com probabilidade de 20%
+    { itemId: 4, maxQuantity: 1, probability: 10 }, // Item 4 com probabilidade de 10%
+  ],
+  exploration: [
+    { itemId: 5, maxQuantity: 5, probability: 40 }, // Item 5 com probabilidade de 40%
+    { itemId: 6, maxQuantity: 4, probability: 30 }, // Item 6 com probabilidade de 30%
+    { itemId: 7, maxQuantity: 3, probability: 20 }, // Item 7 com probabilidade de 20%
+    { itemId: 8, maxQuantity: 2, probability: 10 }, // Item 8 com probabilidade de 10%
+  ],
+  assault: [
+    { itemId: 9, maxQuantity: 2, probability: 40 }, // Item 9 com probabilidade de 40%
+    { itemId: 10, maxQuantity: 1, probability: 30 }, // Item 10 com probabilidade de 30%
+    { itemId: 11, maxQuantity: 1, probability: 20 }, // Item 11 com probabilidade de 20%
+    { itemId: 12, maxQuantity: 1, probability: 10 }, // Item 12 com probabilidade de 10%
+  ],
+  special_occasions: [
+    { itemId: 1, maxQuantity: 3, probability: 40 }, // Item 13 com probabilidade de 40%
+    { itemId: 1, maxQuantity: 2, probability: 30 }, // Item 14 com probabilidade de 30%
+    { itemId: 1, maxQuantity: 1, probability: 20 }, // Item 15 com probabilidade de 20%
+    { itemId: 1, maxQuantity: 1, probability: 10 }, // Item 16 com probabilidade de 10%
+  ],
+  rare_events: [
+    { itemId: 1, maxQuantity: 1, probability: 40 }, // Item 17 com probabilidade de 40%
+    { itemId: 1, maxQuantity: 1, probability: 30 }, // Item 18 com probabilidade de 30%
+    { itemId: 1, maxQuantity: 1, probability: 20 }, // Item 19 com probabilidade de 20%
+    { itemId: 1, maxQuantity: 1, probability: 10 }, // Item 20 com probabilidade de 10%
+  ]
+};
+
+// Função para gerar uma aventura aleatória
+function generateAdventure(pet) {
+  // Ordenando as categorias de aventura por probabilidade (do mais provável para o menos provável)
+  const sortedCategories = adventureCategories.sort(
+    (a, b) => b.probability - a.probability
+  );
+
+  // Escolhendo uma categoria aleatória baseada na probabilidade
+  const randomCategoryIndex = getRandomIndexWithProbability(sortedCategories);
+  const category = sortedCategories[randomCategoryIndex].category;
+
+  // Gerando o loot aleatório baseado na categoria escolhida
+  const loot = getRandomLoot(category);
+
+  // Escolhendo uma descrição de aventura aleatória baseada na categoria
+  const description = getRandomAdventureDescription(category, pet);
+
+  // Retornando os dados da aventura gerada
+  addToConsole(`<aviso>Categoria: ${category} - Descrição: ${description} - Loot: ${loot[1]} </aviso>`)
+  return {
+    category,
+    loot,
+    description,
+  };
+}
+
+// Função para escolher um índice aleatório com base na probabilidade
+function getRandomIndexWithProbability(array) {
+  const totalProbability = array.reduce((sum, item) => sum + item.probability, 0);
+  let randomNum = Math.random() * totalProbability;
+
+  for (let i = 0; i < array.length; i++) {
+    const item = array[i];
+    randomNum -= item.probability;
+    if (randomNum <= 0) {
+      return i;
+    }
+  }
+}
+
+// Função para gerar um loot aleatório baseado na categoria
+function getRandomLoot(category) {
+  const lootItems = lootItemsByCategory[category];
+  const loot = {};
+
+  for (const item of lootItems) {
+    const quantity = getRandomQuantity(item.maxQuantity);
+    loot[item.itemId] = quantity;
+  }
+
+  return loot;
+}
+
+// Função para gerar uma quantidade aleatória baseada no máximo permitido
+function getRandomQuantity(maxQuantity) {
+  return Math.floor(Math.random() * (maxQuantity + 1));
+}
+
+// Função para escolher uma descrição de aventura aleatória baseada na categoria
+function getRandomAdventureDescription(category, pet) {
+  const descriptions = adventureDescriptions[category];
+  const sortedDescriptions = descriptions.sort(
+    (a, b) => b.probability - a.probability
+  );
+
+  const randomIndex = getRandomIndexWithProbability(sortedDescriptions);
+  const description = sortedDescriptions[randomIndex].description;
+
+  // Substituindo o nome do pet na descrição
+  const replacedDescription = description.replace("${pet.nome}", pet.nome);
+
+  return replacedDescription;
+}
+
+// ----------------------------------------------------------------------------------------------
+
 
 // Ação de passar o dia e atualizar o estado do Tamagucci
 function passDay() {
@@ -579,7 +856,7 @@ function passDay() {
     // Operações
 	pet.energia += pet.idade % 2 === 0 ? 1 : 0;
 	pet.sujo += pet.idade % 2 === 0 ? 1 : 0;
-    pet.saude -= pet.sujo * 3;
+  pet.saude -= pet.sujo * 3;
 
 	pet.energia = Math.max(0, Math.min(pet.energia, 10));
 	pet.sujo = Math.max(0, Math.min(pet.sujo, 3));
@@ -590,7 +867,7 @@ function passDay() {
 	addToConsole(`<b>DIA ${pet.idade}:</b> fome ${pet.fome}, saúde ${pet.saude}, felicidade ${pet.felicidade}, energia ${pet.energia}, sujo +1`);
     dateEvent();
     updateGameInterface();
-	evolve();
+	  evolve();
 }
 
 function dateEvent() {
@@ -634,35 +911,57 @@ function evolve() {
 }
 
 // Adiciona os ouvintes de eventos aos botões
-feedButton.addEventListener("click", feed);
+// medicineButton.addEventListener("click", giveMedicine);
+// feedButton.addEventListener("click", feed);
 playButton.addEventListener("click", play);
 cleanButton.addEventListener("click", clean);
 sleepButton.addEventListener("click", sleep);
-medicineButton.addEventListener("click", giveMedicine);
+
 
 // Inicializa a interface do jogo
 updateGameInterface();
 document.addEventListener('DOMContentLoaded', () => {
-	
-    var notif = document.getElementById("notif");
-    var audio = document.getElementById("myAudio");
-    var crunch = document.getElementById("crunch");
-	  audio.volume = 0.4;
-    notif.volume = 0.4;
-    crunch.volum = 0.4;
     addToConsole(`<b>Boas vindas!</b>`)
-	passDay();
-	setInterval(Paimon, 15000); // Executa a função Paimon após 5 segundos
-	setInterval(passDay, 10000);
+	  passDay();
+    setInterval(Paimon, 15000); // Executa a função Paimon após 5 segundos
+	  setInterval(passDay, 10000);
     setTimeout(addItem(1,10), 2000);
-    
+  
+  const notif = document.getElementById("notif");
+  const bgm = document.getElementById("bgm");
+  const crunch = document.getElementById("crunch");
+  const crunch2 = document.getElementById("crunch2");
+  const slurp = document.getElementById("slurp");
+
+    bgm.volume = 0.5;
+    notif.volume = 0.3;
+    crunch.volume = 0.3;
+    crunch2.volume = 0.3;
+    slurp.volume = 0.6;
+  
+  bgm.addEventListener("ended", function() {
+    bgm.currentTime = 0; // Reinicia a reprodução para o início
+});
+
+bgm.addEventListener("canplaythrough", function() {
+    bgm.play();
+});
+
+    setTimeout(function() {
+    bgm.play();
+}, 1000);
+   
+    setTimeout(crunch.play(), 1000)
+    setTimeout(crunch2.play(), 1000)
+    setTimeout(slurp.play(),1000)
+    setTimeout(bgm.play(), 1000);
       // Atualizar a exibição do inventário quando a página for carregada
     atualizarInventario();
 
 
-	audio.addEventListener("ended", function() {
-		audio.currentTime = 0; // Reinicia a reprodução para o início
-		audio.play(); // Inicia a reprodução novamente
-	});
+  
+  
+
+
 
 });
