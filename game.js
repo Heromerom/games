@@ -3,7 +3,7 @@ const pet = {
 	lvl: 0,
   idade: 0,
 	saude: 100,
-	fome: 80,
+	fome: 100,
 	felicidade: 100,
 	energia: 0,
 	isSleeping: false,
@@ -41,19 +41,19 @@ const sleepingDescriptions = {
 const tipoClasses = {
   comida: [
     "bg-yellow-100",
-    "text-yellow-800",
+    "text-yellow-900",
     "dark:bg-yellow-900",
     "dark:text-yellow-300"
   ],
   bebida: [
     "bg-blue-100",
-    "text-blue-800",
+    "text-blue-900",
     "dark:bg-blue-900",
     "dark:text-blue-300"
   ],
   erva: [
     "bg-green-100",
-    "text-green-800",
+    "text-green-900",
     "dark:bg-green-900",
     "dark:text-green-300"
   ],
@@ -62,9 +62,10 @@ const tipoClasses = {
     "bg-gray-900",
     "dark:bg-gray-800",
     "dark:border-gray-700",
-    "w-flex",
+    "flex",
     "border-b",
-    "rounded-md"
+    "rounded-md",
+    "mx-auto"
   ],
 
   itemtitle: [
@@ -108,13 +109,28 @@ const tipoClasses = {
   // Adicione outros tipos e suas classes aqui, se necessário.
 };
 
+// Função para criar elementos com classes CSS
+function createElementWithClasses(elementType, classes) {
+  const element = document.createElement(elementType);
+  element.classList.add(...classes);
+  return element;
+
+  // EXEMPLO: const link = createElementWithClasses("a", tipoClasses['link']);
+}
 
 function getRandomPaimonPhrase() {
-  if (pet.isSleeping){return}
+  if (pet.isSleeping){return} // Se estiver dormindo, fica calada.
+
   const health = pet.saude;
   const hunger = pet.fome;
   const happiness = pet.felicidade;
+  const age = pet.idade;
   const phrases = [
+
+    // Frases relacionadas à história
+    { group: 'story', sequence: 1, phrase: "Era uma vez...", probability: 1},
+    { group: 'story', sequence: 2, phrase: "Havia um jovem aventureiro...", probability: age === 0 ? 1 : 0},
+    { group: 'story', sequence: 3, phrase: "Ele partiu em uma jornada épica...", probability: age === 0 ? 1 : 0},
     // Frases relacionadas à saúde
     { group: 'health', phrase: "Paimon não está se sentindo bem...", probability: health < 70 ? 0.8 : 0 },
     { group: 'health', phrase: "Paimon precisa de cuidados médicos.", probability: health < 40 ? 0.6 : 0 },
@@ -142,7 +158,7 @@ function getRandomPaimonPhrase() {
     { group: 'hunger', phrase: "Paimon devorou algo delicioso!", probability: hunger < 70 ? 0.2 : 0 },
     { group: 'hunger', phrase: "Paimon está satisfeita por enquanto.", probability: hunger < 70 ? 0.2 : 0 },
     // Frases raras de fome
-    { group: 'hunger', phrase: "Paimon encontrou um tesouro... um biscoito!", probability: hunger < 70 ? 0.05 : 0 },
+    { group: 'hunger', phrase: "Paimon encontrou um tesouro... um biscoito!", func: {fn: addItem, params:[5, 1]}, probability: hunger < 70 ? 0.03 : 0 },
     { group: 'hunger', phrase: "Paimon sonhou com uma festa gastronômica...", probability: hunger < 70 ? 0.05 : 0 },
     { group: 'hunger', phrase: "Paimon está tentando resistir à tentação...", probability: hunger < 70 ? 0.05 : 0 },
     // Frases relacionadas à felicidade
@@ -174,8 +190,8 @@ function getRandomPaimonPhrase() {
     { group: 'neutral', phrase: "Paimon adora histórias emocionantes!", probability: 0.2 },
     { group: 'neutral', phrase: "Você pode confiar em Paimon para te guiar!", probability: 0.2 },
     // Frases raras neutras e curiosidades
-    { group: 'neutral', phrase: "Paimon encontrou uma mensagem perdida...", probability: 0.05 },
-    { group: 'neutral', phrase: "Paimon viu um gato dançando...", probability: 0.05 },
+    { group: 'neutral', phrase: "Paimon encontrou uma mensagem perdida...", probability: 0.01 },
+    { group: 'neutral', phrase: "Paimon viu um gato dançando...", probability: 0.03 },
     { group: 'neutral', phrase: "Paimon está lendo um livro interessante!", probability: 0.05 },
     { group: 'neutral', phrase: "Paimon tem uma surpresa para você!", probability: 0.05 },
     { group: 'neutral', phrase: "Paimon está aprendendo a tocar um instrumento.", probability: 0.05 },
@@ -186,18 +202,33 @@ function getRandomPaimonPhrase() {
     { group: 'neutral', phrase: "Paimon encontrou um tesouro escondido!", probability: 0.05 },
     { group: 'neutral', phrase: "Paimon está estudando novas línguas.", probability: 0.05 },
     { group: 'neutral', phrase: "Paimon adora experimentar comidas diferentes!", probability: 0.05 },
+    // Frases únicas
+    { group: 'unique', unique: true, phrase: "Não sou comida de emergência!!!", probability: 1 },
   ];
-  // Filtra as frases com base na probabilidade e grupo atual
-  const filteredPhrases = phrases.filter(
-    (phrase) => phrase.probability > 0 && phrase.group === 'health' && health < 40 ||
-      phrase.probability > 0 && phrase.group === 'hunger' && hunger < 70 ||
-      phrase.probability > 0 && phrase.group === 'happiness' && happiness < 30 ||
-      phrase.probability > 0 && phrase.group === 'neutral'
-  );
+  
+// Filtra as frases com base na probabilidade e grupo atual
+const filteredPhrases = phrases.filter(
+  (phrase) =>
+    phrase.probability > 0 &&
+    (
+      (phrase.group === 'health' && health < 40) ||
+      (phrase.group === 'hunger' && hunger < 70) ||
+      (phrase.group === 'happiness' && happiness < 30) ||
+      (phrase.group === 'neutral') ||
+      (phrase.group === 'unique' && !phrases.some((p) => p.group === 'unique' && p.phrase === phrase.phrase)) ||
+      (phrase.group === 'story' && phrase.probability > 0)
 
-  // Seleciona uma frase aleatória das frases filtradas
-  const randomPhrase = filteredPhrases[Math.floor(Math.random() * filteredPhrases.length)];
+    )
+);
 
+// Seleciona uma frase aleatória das frases filtradas
+const randomPhrase = filteredPhrases[Math.floor(Math.random() * filteredPhrases.length)];
+
+if (randomPhrase.func) {
+  const { fn, params } = randomPhrase.func;
+  fn(...params);
+  // EXEMPLO: func: {fn: addItem, params:[iditem, quantidade]}
+}
   return `<html><svg class="w-3 h-3 inline text-white-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
     <path d="M18 0H2a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2v4a1 1 0 0 0 1.707.707L10.414 13H18a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5 4h2a1 1 0 1 1 0 2h-2a1 1 0 1 1 0-2ZM5 4h5a1 1 0 1 1 0 2H5a1 1 0 0 1 0-2Zm2 5H5a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Zm9 0h-6a1 1 0 0 1 0-2h6a1 1 0 1 1 0 2Z"/>
   </svg></html> <color = #00FFFF><b>${pet.nome}:</b></color> ${randomPhrase.phrase}`;
@@ -208,7 +239,6 @@ function Paimon() {
   if (pet.saude > 0){
 	addToConsole(getRandomPaimonPhrase());
     notif.play();
-    
   }
 }
 
@@ -247,8 +277,6 @@ const petEnergyElement = document.getElementById("petEnergy");
 const petSleepingElement = document.getElementById("petSleeping");
 const petWashingElement = document.getElementById("petWashing");
 const petImageElement = document.getElementById("petImage");
-//const medicineButton = document.getElementById("medicineButton");
-//const feedButton = document.getElementById("feedButton");
 const playButton = document.getElementById("playButton");
 const cleanButton = document.getElementById("cleanButton");
 const sleepButton = document.getElementById("sleepButton");
@@ -264,7 +292,7 @@ const healthBarText = document.getElementById("healthBarText");
 
 // Atualiza a interface do jogo
 function updateGameInterface() {
-    
+
 const petCleanliness = cleanlinessDescriptions[pet.sujo] || '';
 const petDormindo = sleepingDescriptions[pet.isSleeping] || '';
 	petNameElement.textContent = pet.nome;
@@ -284,6 +312,77 @@ const petDormindo = sleepingDescriptions[pet.isSleeping] || '';
 	updateButtons();
 	showEmoji();
 }
+
+
+
+// Atualiza o estado dos botões com base nas necessidades do Tamagucci
+function updateButtons() {
+	// feedButton.disabled = pet.isSleeping || pet.fome >= 100 || pet.saude <= 0;
+	// medicineButton.disabled = pet.isSleeping || pet.saude >= 100 || pet.saude <= 0;
+  playButton.disabled  = pet.isSleeping || pet.saude <= 0;
+	cleanButton.disabled = pet.isSleeping || pet.saude <= 0;
+	sleepButton.disabled = pet.isSleeping || pet.saude <= 0;
+	
+}
+
+// Mostra um emoji indicando as necessidades do Tamagucci
+function showEmoji() {
+	let emoji = "";
+  if (emoji === "" && pet.saude >= 100) {emoji = " ";}
+	if (pet.fome < 50)        {emoji += "🍔";}
+  if (pet.saude < 50)       {emoji += "💊";}
+  if (pet.felicidade < 50)  {emoji += "😢";}
+	if (pet.sujo > 0)         {emoji += "🧼";}
+	emojiElement.textContent = emoji;
+}
+
+// Função que limita os dados do Tamagucci
+function limitStats () {
+  pet.fome = Math.max(0, Math.min(pet.fome, pet.max_fome));
+  pet.saude = Math.max(0, Math.min(pet.saude, pet.max_saude));
+  pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
+  pet.sujo = Math.max(0, Math.min(pet.energia, 4));
+  pet.energia = Math.max(0, Math.min(pet.energia, pet.max_energia));
+  pet.lvl = Math.max(0, Math.min(pet.lvl, pet.max_lvl));
+}
+
+// Ação de brincar com o Tamagucci
+function play() {
+	if (pet.energia > 0) {
+    pet.felicidade += 10;
+		pet.energia -= 1;
+    generateAdventure(pet);
+		updateGameInterface();
+	} else {
+		addToConsole(`<erro>Não há energia suficiente para aventurar-se!</erro>`)
+	}
+}
+
+// Ação de limpar o Tamagucci
+function clean() {
+	if (pet.sujo > 0 && pet.energia > 0) {
+    pet.energia -= 1;
+    pet.sujo -= 1;
+		updateGameInterface();
+	} else {
+		addToConsole(`<erro>Não há energia suficiente se limpar!</erro>`)
+	}
+}
+
+// Ação de fazer o Tamagucci dormir
+function sleep() {
+  if (pet.isSleeping){
+    pet.isSleeping = false;
+    addToConsole(`<emote>${pet.nome} acordou.</emote>`);
+  } else {
+    pet.isSleeping = true;
+    addToConsole(`<emote>${pet.nome} dormiu.</emote>`);
+	  
+  }
+	updateGameInterface();
+}
+
+// JORNAL / CONSOLE -------------------------------------------------------------------------------
 
 // Função para adicionar uma mensagem ao console
 let lastConsoleMessage = "";
@@ -328,72 +427,9 @@ function formatMessage(message) {
 	return message;
 }
 
-// Atualiza o estado dos botões com base nas necessidades do Tamagucci
-function updateButtons() {
-	// feedButton.disabled = pet.isSleeping || pet.fome >= 100 || pet.saude <= 0;
-	// medicineButton.disabled = pet.isSleeping || pet.saude >= 100 || pet.saude <= 0;
-  playButton.disabled  = pet.isSleeping || pet.saude <= 0;
-	cleanButton.disabled = pet.isSleeping || pet.saude <= 0;
-	sleepButton.disabled = pet.isSleeping || pet.saude <= 0;
-	
-}
-
-// Mostra um emoji indicando as necessidades do Tamagucci
-function showEmoji() {
-	let emoji = "";
-  if (emoji === "" && pet.saude >= 100) {emoji = " ";}
-	if (pet.fome < 50)        {emoji += "🍔";}
-  if (pet.saude < 50)       {emoji += "💊";}
-  if (pet.felicidade < 50)  {emoji += "😢";}
-	if (pet.sujo > 0)         {emoji += "🧼";}
-	emojiElement.textContent = emoji;
-}
-
-// Função que limita os dados do Tamagucci
-function limitStats () {
-  pet.fome = Math.max(0, Math.min(pet.fome, pet.max_fome));
-  pet.saude = Math.max(0, Math.min(pet.saude, pet.max_saude));
-  pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
-  pet.sujo = Math.max(0, Math.min(pet.energia, 4));
-  pet.energia = Math.max(0, Math.min(pet.energia, pet.max_energia));
-  pet.lvl = Math.max(0, Math.min(pet.lvl, pet.max_lvl));
-}
-
-// Ação de brincar com o Tamagucci
-function play() {
-	if (pet.energia > 0) {
-    pet.felicidade += 10;
-		pet.energia -= 1;
-    generateAdventure(pet);
-		updateGameInterface();
-	} else {
-		addToConsole(`<erro>Não há energia suficiente.</erro>`)
-	}
-}
-
-// Ação de limpar o Tamagucci
-function clean() {
-	if (pet.sujo > 0 && pet.energia > 0) {
-    pet.energia -= 1;
-    pet.sujo -= 1;
-		updateGameInterface();
-	} else {
-		addToConsole(`<erro>Não há energia suficiente.</erro>`)
-	}
-}
-
-// Ação de fazer o Tamagucci dormir
-function sleep() {
-	pet.isSleeping = true;
-	pet.saude += 10;
-  addToConsole(`<emote>${pet.nome} dormiu.</emote>`);
-	updateGameInterface();
-}
-
-
 // ITENS E INVENTÁRIO -------------------------------------------------------------------------------------
 
-// Array para armazenar os itens existentes
+// Array para armazenar os itens existentes  - será transformado em arquivo YAML ou JSON
 const itensExistentes = [
   {
     id: 1,
@@ -402,7 +438,7 @@ const itensExistentes = [
     raridade: "comum",
     descricao: "Uma maçã vermelha e brilhante. Parece deliciosa!",
     fraseConsumo: "Mhmm! Que maçã deliciosa!",
-    modificadorSaude: 10,
+    modificadorSaude: 5,
     modificadorFelicidade: 5,
     modificadorFome: 5,
     modificadorSujo: 0,
@@ -429,7 +465,7 @@ const itensExistentes = [
     modificadorEnergia: 0,
     modificadorIsSleeping: false,
     precoCompra: 5,
-    precoVenda: 2
+    precoVenda: 0
     
   },
   {
@@ -466,20 +502,31 @@ const itensExistentes = [
     modificadorIsSleeping: false,
     precoCompra: 0,
     precoVenda: 0
+  },
+  {
+    id: 5,
+    tipo: "comida",
+    nome: "Biscoito",
+    raridade: "comum",
+    descricao: "Biscoitos com gotas de chocolate.",
+    fraseConsumo: "Que delícia! As gotas de chocolate derretem mesmo na boca!",
+    modificadorSaude: 0,
+    modificadorFelicidade: 5,
+    modificadorFome: 3,
+    modificadorSujo: 0,
+    modificadorIdade: 0,
+    modificadorEnergia: 0,
+    modificadorIsSleeping: false,
+    precoCompra: 0,
+    precoVenda: 0
     
   }
+  
     // Adicione mais itens existentes conforme necessár
 ];
 
 // Array para armazenar o inventário do jogador
 let inventario = [];
-
-// Função para criar elementos com classes CSS
-function createElementWithClasses(elementType, classes) {
-  const element = document.createElement(elementType);
-  element.classList.add(...classes);
-  return element;
-}
 
 // Função para criar um link de uso de item
 function createUseItemLink(item) {
@@ -487,11 +534,7 @@ function createUseItemLink(item) {
   const link = createElementWithClasses("a", tipoClasses['link']);
   let useText = "";
   
-  if (item.categoria === "comida") {
-    useText = "Comer";
-  } else if (item.categoria === "bebida") {
-    useText = "Beber";
-  } 
+  if (item.categoria === "comida") {useText = "Comer";} else if (item.categoria === "bebida"){useText = "Beber";} 
   
   link.textContent = `Consumir ${useText}`;
   link.classList.add("cursor-pointer");
@@ -534,7 +577,6 @@ function atualizarInventario() {
     div2.appendChild(link);
     li.appendChild(div);
     li.appendChild(div2);
-
     inventarioList.appendChild(li);
   }
 }
@@ -595,6 +637,7 @@ function addItem(idItem, quantidade) {
       });
     }
   }
+  updateGameInterface();
 }
 
 // Função para remover um item do inventário
@@ -606,6 +649,7 @@ function removeItem(idItem, quantidade) {
       inventario = inventario.filter((item) => item.id !== idItem);
     }
   }
+  updateGameInterface();
 }
 
 // Função para usar um item do inventário
@@ -614,53 +658,32 @@ function usarItem(idItem, quantidade) {
   if (itemInventario && itemInventario.quantidade > 0 && pet.isSleeping === false && pet.saude > 0) {
     // Retira quantidade do inventário
     itemInventario.quantidade -= quantidade;
+    // removeItem(itemInventario.id, 0); // Para deixar o item zerado no inventário, descomente esta linha.
     
-    // Atualiza os dados
+    // Atualiza os dados de acordo com os modificadores do item.
     pet.saude += itemInventario.modificadorSaude;
     pet.energia += itemInventario.modificadorEnergia;
     pet.sujo += itemInventario.modificadorSujo;
     pet.idade += itemInventario.modificadorIdade;
-    
-    //pet.isSleeping += itemInventario.modificadorIsSleeping;
     pet.felicidade += itemInventario.modificadorFelicidade;
-    pet.fome += itemInventario.modificadorFome;
-    
-    limitStats();
-    //pet.energia = Math.max(0, Math.min(pet.energia, 10));
-	  //pet.sujo = Math.max(0, Math.min(pet.sujo, 3));
-	  //pet.fome = Math.max(0, Math.min(pet.fome, 100));
-	  //pet.saude = Math.max(0, Math.min(pet.saude, 100));
-	  //pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
+    pet.fome += itemInventario.modificadorFome;      
+    //pet.isSleeping += itemInventario.modificadorIsSleeping;
+
     
     // SFX Consumo
-    if (itemInventario.tipo === "comida"){
-      crunch.play();
-    }
-    
-    if (itemInventario.tipo === "erva"){
-      crunch2.play();
-    }
-    
-    if (itemInventario.tipo === "bebida"){
-      slurp.play();
-    }
+    if (itemInventario.tipo === "comida"){crunch.play();}
+    if (itemInventario.tipo === "erva")  {crunch2.play();}    
+    if (itemInventario.tipo === "bebida"){slurp.play();}
+
     // Frase Consumo
     addToConsole(`<html><svg class="w-3 h-3 inline text-white-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 18">
     <path d="M18 0H2a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2v4a1 1 0 0 0 1.707.707L10.414 13H18a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2Zm-5 4h2a1 1 0 1 1 0 2h-2a1 1 0 1 1 0-2ZM5 4h5a1 1 0 1 1 0 2H5a1 1 0 0 1 0-2Zm2 5H5a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Zm9 0h-6a1 1 0 0 1 0-2h6a1 1 0 1 1 0 2Z"/>
   </svg></html> <color = #00FFFF><b>`+ `${pet.nome}:` + `</b></color> ` + `${itemInventario.fraseConsumo}`)
-    
+    limitStats();
     updateGameInterface();
-  
     } else {
 
-      if (itemInventario){
-        addToConsole(`<erro>Não é possível relizar esta ação.</erro>`)
-    }
-    }
-
-    if (itemInventario === 0 ){
-
-        removeItem(itemInventario.id);
+      addToConsole(`<erro>Não é possível relizar esta ação.</erro>`)
     }
 }
 
@@ -824,8 +847,7 @@ function getRandomAdventureDescription(category, pet) {
 // Ação de passar o dia e atualizar o estado do Tamagucci
 function passDay() {
 	if (pet.saude <= 0) {
-		addToConsole(`${pet.nome} morreu! Fim de jogo!`);
-        confirm("Deseja continuar?");   
+    breakpoint;
 		return;
 	}
 
@@ -849,14 +871,8 @@ function passDay() {
 	}
     // Operações
 	pet.energia += pet.idade % 2 === 0 ? 1 : 0;
-	pet.sujo += pet.idade % 2 === 0 ? 1 : 0;
+	pet.sujo += pet.idade % 2 === 0 ? 0.5 : 0;
   pet.saude -= pet.sujo * 3;
-
-	pet.energia = Math.max(0, Math.min(pet.energia, 10));
-	pet.sujo = Math.max(0, Math.min(pet.sujo, 3));
-	pet.fome = Math.max(0, Math.min(pet.fome, 100));
-	pet.saude = Math.max(0, Math.min(pet.saude, 100));
-	pet.felicidade = Math.max(0, Math.min(pet.felicidade, 100));
 
 	addToConsole(`<b>DIA ${pet.idade}:</b> fome ${pet.fome}, saúde ${pet.saude}, felicidade ${pet.felicidade}, energia ${pet.energia}, sujo +1`);
     dateEvent();
@@ -868,7 +884,7 @@ function dateEvent() {
 
     if (pet.idade % 7 === 0) {
         // A CADA 7 DIAS
-        addToConsole(`1 SEMANA - 1 saco de maçã`);
+        addToConsole(`1 SEMANA - 1 SACO DE MAÇA`);
         addItem(1,5);
             
     }
@@ -905,21 +921,14 @@ function evolve() {
 }
 
 // Adiciona os ouvintes de eventos aos botões
-// medicineButton.addEventListener("click", giveMedicine);
-// feedButton.addEventListener("click", feed);
 playButton.addEventListener("click", play);
 cleanButton.addEventListener("click", clean);
 sleepButton.addEventListener("click", sleep);
 
-
-// Inicializa a interface do jogo
-updateGameInterface();
-
 document.addEventListener('DOMContentLoaded', () => {
     
     addToConsole(`<b>Boas vindas!</b>`)
-	  passDay();
-
+	  setTimeout(passDay, 2000);
     setInterval(Paimon, 25000);       // Executa a função Paimon a cada 25 segundos
 	  setInterval(passDay, 24000);      // Passa o dia a cada 24 segundos
   
@@ -945,7 +954,6 @@ bgm.addEventListener("canplaythrough", function() {
     bgm.play();
 });
 
-    // Atualizar a exibição do inventário quando a página for carregada
-    atualizarInventario();
+updateGameInterface();
 
 });
