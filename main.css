@@ -42,6 +42,7 @@ body {
     margin-bottom: 0.5rem;
 }
 .console ul {
+    font-size: small;
     font-family: helvetica;
     list-style-type: none;
     margin: 0;
