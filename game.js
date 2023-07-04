@@ -484,7 +484,7 @@ function createElementWithClasses(elementType, classes) {
 // Função para criar um link de uso de item
 function createUseItemLink(item) {
   // fazer botão aqui depois
-  const link = createElementWithClasses("a", itemClasses['link']);
+  const link = createElementWithClasses("a", tipoClasses['link']);
   let useText = "";
   
   if (item.categoria === "comida") {
